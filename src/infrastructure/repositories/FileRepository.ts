@@ -2,7 +2,6 @@ import { File } from '../../domain/entities/File';
 import { IFileRepository } from '../../domain/repositories/IFileRepository';
 import fs from 'fs/promises';
 import path from 'path';
-import { v4 as uuidv4 } from 'uuid';
 
 export class FileRepository implements IFileRepository {
   private readonly uploadDir: string;
@@ -28,7 +27,7 @@ export class FileRepository implements IFileRepository {
         mimeType: 'application/octet-stream',
         size: (await fs.stat(filePath)).size,
         path: filePath,
-        createdAt: new Date()
+        createdAt: new Date(),
       };
     } catch {
       return null;
@@ -39,7 +38,7 @@ export class FileRepository implements IFileRepository {
     try {
       const filePath = path.join(this.uploadDir, id);
       await fs.unlink(filePath);
-    } catch (error) {
+    } catch {
       throw new Error('File not found');
     }
   }

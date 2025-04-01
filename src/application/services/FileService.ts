@@ -16,7 +16,7 @@ export class FileService {
       mimeType,
       size: fileBuffer.length,
       path: fileBuffer.toString('base64'),
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     return this.fileRepository.save(file);

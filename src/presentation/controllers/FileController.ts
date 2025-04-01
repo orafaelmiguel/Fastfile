@@ -14,16 +14,16 @@ export class FileController {
       const file = await this.fileService.uploadFile(
         req.file.buffer,
         req.file.originalname,
-        req.file.mimetype
+        req.file.mimetype,
       );
 
       res.status(201).json({
         id: file.id,
         originalName: file.originalName,
         mimeType: file.mimeType,
-        size: file.size
+        size: file.size,
       });
-    } catch (error) {
+    } catch {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
