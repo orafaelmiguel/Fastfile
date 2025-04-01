@@ -69,20 +69,14 @@ document.addEventListener('DOMContentLoaded', () => {
             filePreview.appendChild(img);
         } else {
             const icon = document.createElement('div');
+            icon.className = 'file-icon';
             icon.innerHTML = '📄';
-            icon.style.fontSize = '48px';
-            icon.style.textAlign = 'center';
-            icon.style.marginBottom = '1rem';
             filePreview.appendChild(icon);
         }
 
         const fileInfo = document.createElement('div');
         fileInfo.className = 'file-info';
-        fileInfo.innerHTML = `
-            <p><strong>Name:</strong> ${file.name}</p>
-            <p><strong>Type:</strong> ${file.type}</p>
-            <p><strong>Size:</strong> ${formatFileSize(file.size)}</p>
-        `;
+        fileInfo.innerHTML = `<p>${formatFileSize(file.size)}</p>`;
         filePreview.appendChild(fileInfo);
     }
 
@@ -105,7 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
 
             if (response.ok) {
-                uploadStatus.textContent = 'File uploaded successfully!';
+                uploadStatus.innerHTML = `
+                    <span>✓</span>
+                    <span>File uploaded successfully!</span>
+                `;
                 uploadStatus.className = 'upload-status success';
                 fileInput.value = '';
             } else {
