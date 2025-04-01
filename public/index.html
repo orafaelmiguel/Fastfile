@@ -204,14 +204,77 @@
 
         #filePreview {
             margin-top: 1rem;
-            max-width: 100%;
-            max-height: 300px;
-            border-radius: var(--border-radius);
+            max-width: 250px;
+            max-height: 250px;
+            padding: 10px;
+            position: relative;
+            margin: 1rem auto;
+            display: none;
         }
 
         .preview-container {
             margin-top: 1rem;
             text-align: center;
+        }
+
+        .file-info {
+            margin-top: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            background-color: rgba(255, 68, 68, 0.05);
+            border-radius: var(--border-radius);
+            display: inline-block;
+            font-size: 0.85rem;
+        }
+
+        .file-info span {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .preview-decoration {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary-color);
+            border-radius: 50%;
+            opacity: 0.3;
+        }
+
+        .preview-decoration.top-left {
+            top: 2px;
+            left: 2px;
+        }
+
+        .preview-decoration.top-right {
+            top: 2px;
+            right: 2px;
+        }
+
+        .preview-decoration.bottom-left {
+            bottom: 2px;
+            left: 2px;
+        }
+
+        .preview-decoration.bottom-right {
+            bottom: 2px;
+            right: 2px;
+        }
+
+        .media-container {
+            max-width: 100%;
+            max-height: 200px;
+            overflow: hidden;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            margin-bottom: 0.5rem;
+        }
+
+        .media-container img,
+        .media-container video {
+            max-width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            display: block;
         }
     </style>
 </head>
@@ -319,20 +382,40 @@
 
         function displayFilePreview(file) {
             filePreview.innerHTML = '';
+            filePreview.style.display = 'block';
+            
+            // Adicionar decorações
+            const decorations = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
+            decorations.forEach(pos => {
+                const decor = document.createElement('div');
+                decor.className = `preview-decoration ${pos}`;
+                filePreview.appendChild(decor);
+            });
+
+            // Criar container para a mídia
+            const mediaContainer = document.createElement('div');
+            mediaContainer.className = 'media-container';
+
             if (file.type.startsWith('image/')) {
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
-                img.style.maxWidth = '100%';
-                img.style.maxHeight = '300px';
-                filePreview.appendChild(img);
+                mediaContainer.appendChild(img);
             } else if (file.type.startsWith('video/')) {
                 const video = document.createElement('video');
                 video.src = URL.createObjectURL(file);
-                video.style.maxWidth = '100%';
-                video.style.maxHeight = '300px';
                 video.controls = true;
-                filePreview.appendChild(video);
+                mediaContainer.appendChild(video);
             }
+
+            filePreview.appendChild(mediaContainer);
+
+            // Adicionar informações do arquivo
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info';
+            const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+            const fileType = file.type.split('/')[1].toUpperCase();
+            fileInfo.innerHTML = `Tamanho: <span>${fileSize} MB</span> | Formato: <span>${fileType}</span>`;
+            filePreview.appendChild(fileInfo);
         }
 
         // Seleção de formato
@@ -367,8 +450,27 @@
                 if (response.ok) {
                     result.className = 'success';
                     result.innerHTML = `<p>${data.message}</p>`;
+                    
+                    // Criar blob do buffer base64
+                    const binaryString = window.atob(data.fileBuffer);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: `application/${selectedFormat}` });
+                    const url = window.URL.createObjectURL(blob);
+                    
+                    // Configurar botão de download
                     downloadButton.style.display = 'block';
-                    downloadButton.onclick = () => window.location.href = `/api/download/${data.fileName}`;
+                    downloadButton.onclick = () => {
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = data.fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                    };
                 } else {
                     result.className = 'error';
                     result.textContent = data.error || 'Erro ao converter arquivo';

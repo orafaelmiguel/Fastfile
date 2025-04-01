@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { ConversionService } from '../../application/services/ConversionService';
-import path from 'path';
 
 export class ConversionController {
     private conversionService: ConversionService;
@@ -25,13 +24,14 @@ export class ConversionController {
 
             console.log(`Iniciando conversão do arquivo ${req.file.originalname} para ${targetFormat}`);
             
-            const convertedFilePath = await this.conversionService.convertFile(req.file, targetFormat);
+            const { buffer, fileName } = await this.conversionService.convertFile(req.file, targetFormat);
             
-            console.log(`Arquivo convertido com sucesso: ${convertedFilePath}`);
+            console.log(`Arquivo convertido com sucesso: ${fileName}`);
             
             res.status(200).json({
                 message: 'Arquivo convertido com sucesso',
-                fileName: path.basename(convertedFilePath),
+                fileName: fileName,
+                fileBuffer: buffer.toString('base64')
             });
         } catch (error) {
             console.error('Erro durante a conversão:', error);
