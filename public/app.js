@@ -125,18 +125,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData
             });
 
+            if (!response.ok) {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    const data = await response.json();
+                    throw new Error(data.error || 'Upload failed');
+                } else {
+                    throw new Error('Upload failed. Please try again.');
+                }
+            }
+
             const data = await response.json();
 
-            if (response.ok) {
-                uploadStatus.innerHTML = `
-                    <span>✓</span>
-                    <span>File uploaded successfully!</span>
-                `;
-                uploadStatus.className = 'upload-status success';
-                fileInput.value = '';
-            } else {
-                throw new Error(data.error || 'Upload failed');
-            }
+            uploadStatus.innerHTML = `
+                <span>✓</span>
+                <span>File uploaded successfully!</span>
+            `;
+            uploadStatus.className = 'upload-status success';
+            fileInput.value = '';
         } catch (error) {
             uploadStatus.textContent = error.message;
             uploadStatus.className = 'upload-status error';
