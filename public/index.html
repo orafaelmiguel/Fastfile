@@ -111,33 +111,45 @@
 
         .conversion-options {
             margin-top: 2rem;
+            display: none;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .conversion-options.visible {
+            display: block;
         }
 
         .conversion-options h3 {
             color: var(--primary-color);
             margin-bottom: 1rem;
+            font-size: 1.2rem;
         }
 
         .conversion-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 0.8rem;
+            margin-bottom: 1rem;
         }
 
         .conversion-option {
             background-color: white;
             border: 1px solid #ddd;
             border-radius: var(--border-radius);
-            padding: 1rem;
+            padding: 0.8rem;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-size: 0.9rem;
         }
 
         .conversion-option:hover {
             border-color: var(--primary-color);
             transform: translateY(-2px);
+            background-color: rgba(255, 68, 68, 0.05);
         }
 
         .conversion-option.selected {
@@ -204,12 +216,15 @@
 
         #filePreview {
             margin-top: 1rem;
-            max-width: 250px;
-            max-height: 250px;
-            padding: 10px;
+            max-width: 300px;
+            max-height: 300px;
+            padding: 15px;
             position: relative;
             margin: 1rem auto;
             display: none;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .preview-container {
@@ -218,12 +233,12 @@
         }
 
         .file-info {
-            margin-top: 0.5rem;
-            padding: 0.3rem 0.8rem;
+            margin-top: 1rem;
+            padding: 0.5rem;
             background-color: rgba(255, 68, 68, 0.05);
             border-radius: var(--border-radius);
             display: inline-block;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
         }
 
         .file-info span {
@@ -262,17 +277,17 @@
 
         .media-container {
             max-width: 100%;
-            max-height: 200px;
+            max-height: 250px;
             overflow: hidden;
             border-radius: 4px;
             background-color: #f8f9fa;
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .media-container img,
         .media-container video {
             max-width: 100%;
-            max-height: 200px;
+            max-height: 250px;
             object-fit: contain;
             display: block;
         }
@@ -301,17 +316,28 @@
             </div>
             <div id="conversionOptions" class="conversion-options">
                 <h3>Converter para:</h3>
-                <div id="imageOptions" class="conversion-grid">
-                    <div class="conversion-option" data-format="jpg">JPEG</div>
+                <div id="imageOptions" class="conversion-grid" style="display: none;">
+                    <div class="conversion-option" data-format="jpeg">JPEG</div>
+                    <div class="conversion-option" data-format="jpg">JPG</div>
                     <div class="conversion-option" data-format="png">PNG</div>
-                    <div class="conversion-option" data-format="gif">GIF</div>
-                    <div class="conversion-option" data-format="webp">WEBP</div>
+                    <div class="conversion-option" data-format="tiff">TIFF</div>
+                    <div class="conversion-option" data-format="psd">PSD</div>
+                    <div class="conversion-option" data-format="exif">EXIF</div>
+                    <div class="conversion-option" data-format="raw">RAW</div>
+                    <div class="conversion-option" data-format="svg">SVG</div>
+                    <div class="conversion-option" data-format="img">IMG</div>
                 </div>
-                <div id="videoOptions" class="conversion-grid">
+                <div id="videoOptions" class="conversion-grid" style="display: none;">
                     <div class="conversion-option" data-format="mp4">MP4</div>
                     <div class="conversion-option" data-format="mov">MOV</div>
                     <div class="conversion-option" data-format="avi">AVI</div>
+                    <div class="conversion-option" data-format="wmv">WMV</div>
+                    <div class="conversion-option" data-format="mkv">MKV</div>
+                    <div class="conversion-option" data-format="flv">FLV</div>
+                    <div class="conversion-option" data-format="f4v">F4V</div>
+                    <div class="conversion-option" data-format="swf">SWF</div>
                     <div class="conversion-option" data-format="webm">WEBM</div>
+                    <div class="conversion-option" data-format="html">HTML</div>
                 </div>
             </div>
             <button id="convertButton" class="convert-button" disabled>Converter Arquivo</button>
@@ -376,7 +402,32 @@
             if (files.length > 0) {
                 selectedFile = files[0];
                 displayFilePreview(selectedFile);
+                showConversionOptions(selectedFile);
                 convertButton.disabled = false;
+            }
+        }
+
+        function showConversionOptions(file) {
+            const conversionOptions = document.getElementById('conversionOptions');
+            const imageOptions = document.getElementById('imageOptions');
+            const videoOptions = document.getElementById('videoOptions');
+            
+            // Resetar seleção anterior
+            document.querySelectorAll('.conversion-option').forEach(opt => opt.classList.remove('selected'));
+            selectedFormat = null;
+            convertButton.disabled = true;
+
+            // Mostrar opções baseado no tipo de arquivo
+            if (file.type.startsWith('image/')) {
+                imageOptions.style.display = 'grid';
+                videoOptions.style.display = 'none';
+                conversionOptions.classList.add('visible');
+            } else if (file.type.startsWith('video/')) {
+                imageOptions.style.display = 'none';
+                videoOptions.style.display = 'grid';
+                conversionOptions.classList.add('visible');
+            } else {
+                conversionOptions.classList.remove('visible');
             }
         }
 
@@ -384,14 +435,6 @@
             filePreview.innerHTML = '';
             filePreview.style.display = 'block';
             
-            // Adicionar decorações
-            const decorations = ['top-left', 'top-right', 'bottom-left', 'bottom-right'];
-            decorations.forEach(pos => {
-                const decor = document.createElement('div');
-                decor.className = `preview-decoration ${pos}`;
-                filePreview.appendChild(decor);
-            });
-
             // Criar container para a mídia
             const mediaContainer = document.createElement('div');
             mediaContainer.className = 'media-container';
