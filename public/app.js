@@ -41,7 +41,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleDrop(e) {
         const dt = e.dataTransfer;
         const files = dt.files;
-        handleFiles(files);
+        if (files.length > 0) {
+            showPreview(files[0]);
+            handleFiles(files);
+        }
     }
 
     function handleSubmit(e) {
