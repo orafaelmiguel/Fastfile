@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const fileInput = document.getElementById('fileInput');
     const uploadForm = document.getElementById('uploadForm');
     const uploadStatus = document.getElementById('uploadStatus');
+    const previewContainer = document.getElementById('previewContainer');
+    const filePreview = document.getElementById('filePreview');
 
     const preventDefaults = (e) => {
         e.preventDefault();
@@ -40,10 +42,48 @@ document.addEventListener('DOMContentLoaded', () => {
         handleFiles(files);
     }
 
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function showPreview(file) {
+        previewContainer.classList.add('visible');
+        filePreview.innerHTML = '';
+
+        if (file.type.startsWith('image/')) {
+            const img = document.createElement('img');
+            img.src = URL.createObjectURL(file);
+            img.alt = file.name;
+            filePreview.appendChild(img);
+        } else {
+            const icon = document.createElement('div');
+            icon.innerHTML = '📄';
+            icon.style.fontSize = '48px';
+            icon.style.textAlign = 'center';
+            icon.style.marginBottom = '1rem';
+            filePreview.appendChild(icon);
+        }
+
+        const fileInfo = document.createElement('div');
+        fileInfo.className = 'file-info';
+        fileInfo.innerHTML = `
+            <p><strong>Name:</strong> ${file.name}</p>
+            <p><strong>Type:</strong> ${file.type}</p>
+            <p><strong>Size:</strong> ${formatFileSize(file.size)}</p>
+        `;
+        filePreview.appendChild(fileInfo);
+    }
+
     async function handleFiles(files) {
         if (files.length === 0) return;
 
         const file = files[0];
+        showPreview(file);
+
         const formData = new FormData();
         formData.append('file', file);
 
