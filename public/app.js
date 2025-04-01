@@ -70,6 +70,11 @@ document.addEventListener('DOMContentLoaded', () => {
             img.src = URL.createObjectURL(file);
             img.alt = file.name;
             filePreview.appendChild(img);
+        } else if (file.type.startsWith('video/')) {
+            const icon = document.createElement('div');
+            icon.className = 'file-icon';
+            icon.innerHTML = '🎥';
+            filePreview.appendChild(icon);
         } else {
             const icon = document.createElement('div');
             icon.className = 'file-icon';
@@ -79,8 +84,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const fileInfo = document.createElement('div');
         fileInfo.className = 'file-info';
-        fileInfo.innerHTML = `<p>${formatFileSize(file.size)}</p>`;
+        fileInfo.innerHTML = `
+            <p>${file.name}</p>
+            <p class="file-type">${file.type.split('/')[1].toUpperCase()}</p>
+            <p>${formatFileSize(file.size)}</p>
+        `;
         filePreview.appendChild(fileInfo);
+
+        // Mostrar opções de conversão apropriadas
+        const conversionOptions = document.getElementById('conversionOptions');
+        const imageOptions = document.getElementById('imageOptions');
+        const videoOptions = document.getElementById('videoOptions');
+
+        if (file.type.startsWith('image/')) {
+            imageOptions.style.display = 'grid';
+            videoOptions.style.display = 'none';
+            conversionOptions.classList.add('visible');
+        } else if (file.type.startsWith('video/')) {
+            imageOptions.style.display = 'none';
+            videoOptions.style.display = 'grid';
+            conversionOptions.classList.add('visible');
+        } else {
+            conversionOptions.classList.remove('visible');
+        }
     }
 
     async function handleFiles(files) {

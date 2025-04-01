@@ -208,9 +208,65 @@ h1 {
   margin: 0;
 }
 
+.file-preview .file-info .file-type {
+  color: var(--primary-color);
+  font-weight: 500;
+  margin-top: 0.3rem;
+}
+
 .file-preview .file-icon {
   font-size: 2rem;
   color: var(--primary-color);
+}
+
+.conversion-options {
+  display: none;
+  margin-top: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.conversion-options.visible {
+  display: block;
+}
+
+.conversion-options h3 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+}
+
+.conversion-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.8rem;
+}
+
+.conversion-option {
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.8rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.conversion-option:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(255, 59, 48, 0.05);
+  transform: translateY(-2px);
+}
+
+.conversion-option span {
+  display: block;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  font-weight: 500;
 }
 
 .download-button {
