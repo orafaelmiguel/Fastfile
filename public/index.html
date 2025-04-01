@@ -9,20 +9,25 @@
 <body>
     <div class="container">
         <header>
-            <h1>Fast File Converter</h1>
+            <h1>File Converter</h1>
             <p class="subtitle">Simple and reliable file conversion</p>
         </header>
         
         <main>
             <div class="upload-area">
-                <div class="upload-box">
+                <div class="upload-box" id="dropZone">
                     <img src="upload-icon.svg" alt="Upload" class="upload-icon">
                     <p>Drag and drop your files here</p>
                     <p class="or">or</p>
-                    <button class="select-button">Select files</button>
+                    <form id="uploadForm" enctype="multipart/form-data">
+                        <input type="file" id="fileInput" name="file" class="file-input" accept="image/jpeg,image/png,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                        <button type="submit" class="select-button">Select files</button>
+                    </form>
                 </div>
+                <div id="uploadStatus" class="upload-status"></div>
             </div>
         </main>
     </div>
+    <script src="app.js"></script>
 </body>
 </html> 
