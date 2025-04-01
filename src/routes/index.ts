@@ -14,6 +14,6 @@ router.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../public/index.html'));
 });
 
-router.post('/upload', fileUploadMiddleware, (req, res) => fileController.uploadFile(req, res));
+router.post('/upload', fileUploadMiddleware.single('file'), (req, res) => fileController.uploadFile(req, res));
 
-export default router; 
+export default router;

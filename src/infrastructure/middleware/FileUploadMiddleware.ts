@@ -20,9 +20,10 @@ const fileFilter = (req: Request, file: MulterFile, cb: multer.FileFilterCallbac
     'image/jpeg',
     'image/png',
     'image/gif',
-    'application/pdf',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'video/mp4',
+    'video/quicktime',
+    'video/x-msvideo',
+    'video/webm',
   ];
 
   if (allowedMimes.includes(file.mimetype)) {
@@ -32,13 +33,11 @@ const fileFilter = (req: Request, file: MulterFile, cb: multer.FileFilterCallbac
   }
 };
 
-const upload = multer({
+export const fileUploadMiddleware = multer({
   storage,
   fileFilter,
   limits: {
     fileSize: parseInt(process.env.MAX_FILE_SIZE || '10485760'),
     files: 1,
   },
-});
-
-export const fileUploadMiddleware = upload.single('file'); 
+}); 
