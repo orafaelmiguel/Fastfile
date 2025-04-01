@@ -28,7 +28,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dropZone.addEventListener('drop', handleDrop, false);
     dropZone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFileSelect);
     uploadForm.addEventListener('submit', handleSubmit);
+
+    function handleFileSelect(e) {
+        const files = e.target.files;
+        if (files.length > 0) {
+            showPreview(files[0]);
+        }
+    }
 
     function handleDrop(e) {
         const dt = e.dataTransfer;
@@ -82,8 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (files.length === 0) return;
 
         const file = files[0];
-        showPreview(file);
-
         const formData = new FormData();
         formData.append('file', file);
 
