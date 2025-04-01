@@ -128,7 +128,9 @@ h1 {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  transition: width 0.3s ease, height 0.3s ease;
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
 }
 
 .select-button:hover::after {
@@ -209,4 +211,50 @@ h1 {
 .file-preview .file-icon {
   font-size: 2rem;
   color: var(--primary-color);
+}
+
+.download-button {
+  display: none;
+  background-color: var(--error-color);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  width: 100%;
+  max-width: 600px;
+  position: relative;
+  overflow: hidden;
+}
+
+.download-button.visible {
+  display: block;
+}
+
+.download-button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    width 0.3s ease,
+    height 0.3s ease;
+}
+
+.download-button:hover::after {
+  width: 200px;
+  height: 200px;
+}
+
+.download-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
 }
